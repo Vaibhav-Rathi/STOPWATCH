@@ -6,14 +6,14 @@
     <title>Password Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gray-100">
+<body class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
 
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
         <h1 class="text-2xl font-bold mb-4">Password Generator</h1>
 
         <input type="text" id="password" class="w-full border-2 p-2 rounded-md text-center" readonly>
 
-        <div class="flex justify-between my-4">
+        <div class="flex flex-wrap justify-between my-4 gap-2">
             <label class="flex items-center">
                 <input type="checkbox" id="lowercase" checked class="mr-2"> Lowercase
             </label>
@@ -22,7 +22,7 @@
             </label>
         </div>
 
-        <div class="flex justify-between mb-4">
+        <div class="flex flex-wrap justify-between mb-4 gap-2">
             <label class="flex items-center">
                 <input type="checkbox" id="numbers" checked class="mr-2"> Numbers
             </label>
