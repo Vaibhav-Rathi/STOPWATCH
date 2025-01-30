@@ -27,13 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function copyPassword() {
-        if(passwordField.textContent !==""){
-            passwordField.select();
-            document.execCommand("copy");
-            alert("Password copied to clipboard!");
-        }else {
-            alert("Please generate the password first!")
-        }
+        passwordField.select();
+        document.execCommand("copy");
+        alert("Password copied to clipboard!");
     }
 
     lengthSlider.addEventListener("input", function () {
