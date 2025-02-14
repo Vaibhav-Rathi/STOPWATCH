@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    .animate-fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="flex items-center justify-center min-h-screen bg-cover bg-center px-4 py-8" style="background-image: url('https://pics.craiyon.com/2023-11-16/wHGM0abcSOWVL1p6KEsCZw.webp');">
+    <div class="w-full max-w-md p-6 rounded-xl shadow-lg text-center bg-white sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-6 text-gray-700">Weather App</h1>
+      <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-6 justify-center">
+        <input id="city" type="text" placeholder="Enter city" class="px-4 py-2 border rounded-lg w-full sm:w-64 text-center" />
+        <button onclick="fetchWeather()" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Get Weather</button>
+      </div>
+      <div id="weather-result" class="hidden">
+        <div class="p-6 rounded-lg shadow-lg bg-gradient-to-r from-blue-400 to-blue-600 text-white animate-fade-in">
+          <h2 id="location" class="text-2xl sm:text-3xl font-bold"></h2>
+          <p id="description" class="text-lg"></p>
+          <img id="weather-icon" class="mx-auto my-2" />
+          <p id="temperature" class="text-4xl sm:text-5xl font-bold"></p>
+          <div id="additional-info" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4"></div>
+        </div>
+      </div>
+      <div id="error-result" class="hidden">
+        <div class="p-6 rounded-lg shadow-lg bg-red-600 text-white animate-fade-in">
+          <h2 class="text-3xl font-bold">City not found</h2>
+          <p class="text-lg">Please enter a valid city name.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = "63dab460497dca093d21297c3da13b5e";
+
+    async function fetchWeather() {
+      const city = document.getElementById('city').value;
+      if (!city) return;
+
+      try {
+        const response = await axios.get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+        );
+        const data = response.data;
+        if (data.cod === 200) {
+          displayWeather(data);
+        } else {
+          displayError();
+        }
+      } catch (error) {
+        console.error("Error fetching weather data", error);
+        displayError();
+      }
+    }
+
+    function displayWeather(weather) {
+      document.getElementById('weather-result').classList.remove('hidden');
+      document.getElementById('error-result').classList.add('hidden');
+
+      document.getElementById('location').textContent = `${weather.name}, ${weather.sys.country}`;
+      document.getElementById('description').textContent = weather.weather[0].description;
+      document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
+      document.getElementById('temperature').textContent = `${weather.main.temp}°C`;
+
+      const additionalInfo = document.getElementById('additional-info');
+      additionalInfo.innerHTML = `
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/4833/4833178.png" class="w-6 h-6 mr-2" alt="Feels Like" /> Feels like: ${weather.main.feels_like}°C</p>
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/869/869869.png" class="w-6 h-6 mr-2" alt="Temperature Range" /> Min: ${weather.main.temp_min}°C | Max: ${weather.main.temp_max}°C</p>
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/4814/4814268.png" class="w-6 h-6 mr-2" alt="Humidity" /> Humidity: ${weather.main.humidity}%</p>
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/2210/2210676.png" class="w-6 h-6 mr-2" alt="Pressure" /> Pressure: ${weather.main.pressure} hPa</p>
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/3104/3104616.png" class="w-6 h-6 mr-2" alt="Wind" /> Wind: ${weather.wind.speed} m/s at ${weather.wind.deg}°</p>
+        <p class="text-sm flex items-center"><img src="https://cdn-icons-png.flaticon.com/128/414/414825.png" class="w-6 h-6 mr-2" alt="Visibility" /> Visibility: ${weather.visibility} meters</p>
+      `;
+    }
+
+    function displayError() {
+      document.getElementById('weather-result').classList.add('hidden');
+      document.getElementById('error-result').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
